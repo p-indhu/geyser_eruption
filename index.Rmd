@@ -1,0 +1,66 @@
+---
+title       : Geyser Eruption duration prediction
+subtitle    : Old Faithful geyser, Wyoming, Yellowstone National Park
+author      : 
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## What the app does
+
+1. Uses 'geyser' R dataset(eruptions data from the 'Old Faithful' geyser in Yellowstone National Park) to build a linear model on eruption duration.
+2. Predicts the eruption duration given the waiting time between eruptions.
+3. Presents predicted values of eruption and the prediction interval for the waiting time of entire dataset.
+
+<div style='text-align: center;'>
+    <img height='400' width='1000' src='assets/img/tryitout.png' />
+</div>
+
+
+---  
+
+## Understanding the linear model 
+
+Behind the scenes, the app uses linear model to predict the eruption time.
+
+```{r echo=TRUE, results='hide'}
+        library(caret); data(faithful)
+        geyserdata <- as.data.frame(faithful)
+        set.seed(975); inTrain = createDataPartition(geyserdata$eruptions, p = 0.80)[[1]]
+        trainsub = geyserdata[ inTrain,]; testsub = geyserdata[-inTrain,]
+        set.seed(978); modelfit <- lm(eruptions ~ waiting, data = trainsub)
+```
+
+Since it is a small dataset, 80% of the data is used to train and 20% was used to test the model. Below graph shows the predicted duration values for test subset with linear model(Red line) and prediction interval(Green lines) 
+
+```{r echo=FALSE, fig.height = 3.5, fig.width = 5, fig.align='center'}
+        peruptions <- predict(modelfit, newdata = testsub, interval = "prediction")
+        ordered <- order(testsub$waiting)
+        plot(testsub$waiting, testsub$eruptions, pch = 19, main = "Prediction interval plot for test subset", xlab = "Waiting time between eruptions(in mins)", ylab = "Eruption duration(in mins)")
+         matlines(testsub$waiting[ordered], peruptions[ordered,], type = "l", col = c(2,3,3), lty = c(1,1,1), lwd = 3)
+
+```
+
+---
+
+## Summary of the model
+
+```{r echo=FALSE, fig.height=7}
+summary(modelfit)
+```
+
+
+---
+
+## Why use it
+
+1. Simple and easy - Use a simple slider to enter waiting time and predict eruption time
+2. General understanding of the geyser data from the 'prediction interval' plot
+3. Reusable - Can be used as a base for other datasets to find linear relationships
+4. Scalable - More observations can be added to the underlying linear model without affecting the user interface.
+5. Reproducible - R coding helps make it reproducible (Eg. Setting seed before building the model)

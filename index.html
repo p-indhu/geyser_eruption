@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geyser Eruption duration prediction</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Geyser Eruption duration prediction">
+  <meta name="author" content="">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Geyser Eruption duration prediction</h1>
+    <h2>Old Faithful geyser, Wyoming, Yellowstone National Park</h2>
+    <p><br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>What the app does</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Uses &#39;geyser&#39; R dataset(eruptions data from the &#39;Old Faithful&#39; geyser in Yellowstone National Park) to build a linear model on eruption duration.</li>
+<li>Predicts the eruption duration given the waiting time between eruptions.</li>
+<li>Presents predicted values of eruption and the prediction interval for the waiting time of entire dataset.</li>
+</ol>
+
+<div style='text-align: center;'>
+    <img height='400' width='1000' src='assets/img/tryitout.png' />
+</div>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Understanding the linear model</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Behind the scenes, the app uses linear model to predict the eruption time.</p>
+
+<pre><code class="r">        library(caret); data(faithful)
+        geyserdata &lt;- as.data.frame(faithful)
+        set.seed(975); inTrain = createDataPartition(geyserdata$eruptions, p = 0.80)[[1]]
+        trainsub = geyserdata[ inTrain,]; testsub = geyserdata[-inTrain,]
+        set.seed(978); modelfit &lt;- lm(eruptions ~ waiting, data = trainsub)
+</code></pre>
+
+<p>Since it is a small dataset, 80% of the data is used to train and 20% was used to test the model. Below graph shows the predicted duration values for test subset with linear model(Red line) and prediction interval(Green lines) </p>
+
+<p><img src="assets/fig/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Summary of the model</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code>## 
+## Call:
+## lm(formula = eruptions ~ waiting, data = trainsub)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.30318 -0.37966  0.03319  0.33511  1.18779 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1.877981   0.170018  -11.05   &lt;2e-16 ***
+## waiting      0.075753   0.002363   32.06   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4808 on 218 degrees of freedom
+## Multiple R-squared:  0.825,  Adjusted R-squared:  0.8242 
+## F-statistic:  1028 on 1 and 218 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Why use it</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Simple and easy - Use a simple slider to enter waiting time and predict eruption time</li>
+<li>General understanding of the geyser data from the &#39;prediction interval&#39; plot</li>
+<li>Reusable - Can be used as a base for other datasets to find linear relationships</li>
+<li>Scalable - More observations can be added to the underlying linear model without affecting the user interface.</li>
+<li>Reproducible - R coding helps make it reproducible (Eg. Setting seed before building the model)</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='What the app does'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Understanding the linear model'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Summary of the model'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Why use it'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
